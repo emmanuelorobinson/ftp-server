@@ -1,0 +1,102 @@
+4321 Jul 17 21:06 - Log File:
+/home/emmanuelrobinson/Downloads/ICT374_Assignment2_Emmanuel_Anu/myftpd/myftpd.log
+4321 Jul 17 21:06 - Myftp server started up, listening on port 12345
+4357 Jul 17 21:06 - Log File:
+/home/emmanuelrobinson/Downloads/ICT374_Assignment2_Emmanuel_Anu/myftpd/myftpd.log
+4389 Jul 17 21:07 - Log File:
+/home/emmanuelrobinson/Downloads/ICT374_Assignment2_Emmanuel_Anu/myftpd/myftpd.log
+4389 Jul 17 21:07 - Myftp server started up, listening on port 12345
+4434 Jul 17 21:09 - Log File:
+/home/emmanuelrobinson/Downloads/ICT374_Assignment2_Emmanuel_Anu/myftpd/myftpd.log
+4434 Jul 17 21:09 - Myftp server started up, listening on port 12345
+4481 Jul 17 21:09 - PWD command received
+4481 Jul 17 21:09 - PWD command sent
+4481 Jul 17 21:11 - Client session closed
+4624 Jul 17 21:12 - PWD command received
+4624 Jul 17 21:12 - PWD command sent
+4624 Jul 17 21:18 - Client session closed
+4768 Jul 17 21:18 - PWD command received
+4768 Jul 17 21:18 - PWD command sent
+4933 Jul 17 21:28 - Log File:
+/home/emmanuelrobinson/Downloads/ICT374_Assignment2_Emmanuel_Anu/myftpd/myftpd.log
+4946 Jul 17 21:28 - Log File:
+/home/emmanuelrobinson/Downloads/ICT374_Assignment2_Emmanuel_Anu/myftpd/myftpd.log
+4966 Jul 17 21:28 - Log File:
+/home/emmanuelrobinson/Downloads/ICT374_Assignment2_Emmanuel_Anu/myftpd/myftpd.log
+4768 Jul 17 21:28 - Client session closed
+4986 Jul 17 21:28 - Log File:
+/home/emmanuelrobinson/Downloads/ICT374_Assignment2_Emmanuel_Anu/myftpd/myftpd.log
+4986 Jul 17 21:28 - Myftp server started up, listening on port 12345
+5024 Jul 17 21:29 - PWD command received
+5024 Jul 17 21:29 - PWD command sent
+5024 Jul 17 21:31 - Client session closed
+5104 Jul 17 21:31 - PWD command received
+5104 Jul 17 21:31 - PWD command sent
+5104 Jul 17 21:50 - Client session closed
+5527 Jul 17 21:51 - Log File:
+/home/emmanuelrobinson/Downloads/ICT374_Assignment2_Emmanuel_Anu/myftpd/myftpd.log
+5527 Jul 17 21:51 - Myftp server started up, listening on port 12345
+5551 Jul 17 21:52 - [PWD] command received
+5551 Jul 17 21:52 - [PWD] command sent
+5551 Jul 17 21:52 - Client session closed
+5844 Jul 17 21:57 - Log File:
+/home/emmanuelrobinson/Downloads/ICT374_Assignment2_Emmanuel_Anu/myftpd/myftpd.log
+5844 Jul 17 21:57 - Myftp server started up, listening on port 12345
+5846 Jul 17 21:57 - [CD] Failed to read file length
+5846 Jul 17 21:57 - Unknown command received
+5846 Jul 17 21:58 - Client session closed
+5848 Jul 17 21:58 - [CD] Failed to read file length
+5848 Jul 17 21:58 - Unknown command received
+5848 Jul 17 21:58 - Client session closed
+6218 Jul 17 22:10 - Log File:
+/home/emmanuelrobinson/Downloads/ICT374_Assignment2_Emmanuel_Anu/myftpd/myftpd.log
+6218 Jul 17 22:10 - Myftp server started up, listening on port 12345
+6439 Jul 17 22:18 - Log File:
+/home/emmanuelrobinson/Downloads/ICT374_Assignment2_Emmanuel_Anu/myftpd/myftpd.log
+6439 Jul 17 22:18 - Myftp server started up, listening on port 12345
+7022 Jul 17 22:28 - [PWD] command received
+7022 Jul 17 22:28 - [PWD] command sent
+7455 Jul 17 22:53 - Log File:
+/home/emmanuelrobinson/Downloads/ICT374_Assignment2_Emmanuel_Anu/myftpd/myftpd.log
+7455 Jul 17 22:53 - Myftp server started up, listening on port 12345
+7487 Jul 17 22:54 - [CD] command received
+7583 Jul 17 22:58 - Log File:
+/home/emmanuelrobinson/Downloads/ICT374_Assignment2_Emmanuel_Anu/myftpd/myftpd.log
+7583 Jul 17 22:58 - Myftp server started up, listening on port 12345
+7626 Jul 17 22:59 - [CD] command received
+7630 Jul 17 22:59 - [CD] command received
+7634 Jul 17 22:59 - [CD] command received
+7749 Jul 17 23:02 - Log File:
+/home/emmanuelrobinson/Downloads/ICT374_Assignment2_Emmanuel_Anu/myftpd/myftpd.log
+7749 Jul 17 23:02 - Myftp server started up, listening on port 12345
+7751 Jul 17 23:02 - [CD] command received
+7802 Jul 17 23:04 - Log File:
+/home/emmanuelrobinson/Downloads/ICT374_Assignment2_Emmanuel_Anu/myftpd/myftpd.log
+7802 Jul 17 23:04 - Myftp server started up, listening on port 12345
+7845 Jul 17 23:04 - [CD] command received
+7850 Jul 17 23:04 - [CD] command received
+7880 Jul 17 23:05 - Log File:
+/home/emmanuelrobinson/Downloads/ICT374_Assignment2_Emmanuel_Anu/myftpd/myftpd.log
+7880 Jul 17 23:05 - Myftp server started up, listening on port 12345
+7911 Jul 17 23:05 - [CD] command received
+8361 Jul 17 23:24 - Log File:
+/home/emmanuelrobinson/Downloads/ICT374_Assignment2_Emmanuel_Anu/myftpd/myftpd.log
+8366 Jul 17 23:24 - Log File:
+/home/emmanuelrobinson/Downloads/ICT374_Assignment2_Emmanuel_Anu/myftpd/myftpd.log
+8389 Jul 17 23:25 - Log File:
+/home/emmanuelrobinson/Downloads/ICT374_Assignment2_Emmanuel_Anu/myftpd/myftpd.log
+8565 Jul 17 23:27 - Log File:
+/home/emmanuelrobinson/Downloads/ICT374_Assignment2_Emmanuel_Anu/myftpd/myftpd.log
+8565 Jul 17 23:27 - Myftp server started up, listening on port 12345
+8567 Jul 17 23:33 - Client session closed
+8831 Jul 17 23:34 - Log File:
+/home/emmanuelrobinson/Downloads/ICT374_Assignment2_Emmanuel_Anu/myftpd/myftpd.log
+8831 Jul 17 23:34 - Myftp server started up, listening on port 12345
+8834 Jul 17 23:42 - Client session closed
+8977 Jul 17 23:42 - Log File:
+/home/emmanuelrobinson/Downloads/ICT374_Assignment2_Emmanuel_Anu/myftpd/myftpd.log
+8977 Jul 17 23:42 - Myftp server started up, listening on port 12345
+8979 Jul 17 23:42 - [CD] CD command received.8979 Jul 17 23:42 - [CD] read file length.8979 Jul 17 23:42 - [CD] read file path.8979 Jul 17 23:42 - [CD] status is ready.8979 Jul 17 23:42 - [CD] CD function ended.8979 Jul 17 23:42 - [PWD] command received
+8979 Jul 17 23:42 - [PWD] command sent
+8979 Jul 17 23:42 - [CD] CD command received.8979 Jul 17 23:42 - [CD] read file length.8979 Jul 17 23:42 - [CD] read file path.8979 Jul 17 23:42 - [CD] status is ready.8979 Jul 17 23:42 - [CD] CD function ended.8979 Jul 17 23:43 - [PWD] command received
+8979 Jul 17 23:43 - [PWD] command sent
