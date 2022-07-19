@@ -14,6 +14,7 @@
 #include "../netprotocol.h"  /* head file for netprotocol */
 
 #define MAX_TOKEN           	256
+#define MAX_NUM_TOKENS 100
 #define BUF_SIZE            	256
 #define MAX_STRING_LENGTH   	10000
 #define LOG_NAME		"/myftpd.log"		/* log file */

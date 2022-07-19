@@ -78,6 +78,95 @@ void serve_a_client(int sd, char *file)
 void ser_fdr(int socket_desc, char *file)
 {
 	// variables
+	char buf[MAX_BLOCK_SIZE];
+	int len, nw, nr;
+	char status;
+	buf[0] = OP_FDR;
+
+	DIR *dp;
+	struct dirent *direntp;
+	int filecount = 0;
+	char files[MAX_NUM_TOKENS];
+	char tmp[MAX_NUM_TOKENS];
+
+
+	log_message(file, "[DIR] dir command received.\n");
+
+	if ((dp = opendir(".")) == NULL)
+	{
+		log_message(file, "[DIR] Failed to open directory.\n");
+		status = ERROR_CODE;
+		nw = writen(socket_desc, &status, 1);
+		return;
+	}
+
+	// get filenames
+	while ((direntp = readdir(dp)) != NULL)
+	{
+		strcpy(tmp, direntp->d_name);
+
+		if (tmp[0] != '.')
+		{
+			strcat(files, direntp->d_name);
+			if (filecount != 0)
+			{
+				strcat(files, "\n\t");
+			}
+		}
+		filecount++;
+		if (filecount > MAX_NUM_TOKENS)
+		{
+			log_message(file, "[DIR] Exceeded program capacity, truncated.\n");
+			break;
+		}
+	}
+
+	nr = strlen(files);
+	len = htons(nr);
+	bcopy(&len, &buf[2], 2);
+
+	if (nr == 0)
+		status = ERROR_CODE;
+	else
+		status = SUCCESS_CODE;
+
+	// write OPCODE to client
+	nw = writen(socket_desc, &buf[0], 1);
+	if (nw < 0)
+	{
+		fprintf(stderr, "[DIR] Error writing OPCODE to client\n");
+		log_message(file, "[DIR] Error writing OPCODE to client\n");
+		return;
+	}
+
+	// write status to client
+	nw = writen(socket_desc, &status, 1);
+	if (nw < 0)
+	{
+		fprintf(stderr, "[DIR] Error writing status to client\n");
+		log_message(file, "[DIR] Error writing status to client\n");
+		return;
+	}
+
+	// write files to client
+	nw = writen(socket_desc, &buf[2], 4);
+	if (nw < 0)
+	{
+		fprintf(stderr, "[DIR] Error writing files to client\n");
+		log_message(file, "[DIR] Error writing files to client\n");
+		return;
+	}
+
+	nw = writen(socket_desc, files, nr);
+	if (nw < 0)
+	{
+		fprintf(stderr, "[DIR] Error writing files to client\n");
+		log_message(file, "[DIR] Error writing files to client\n");
+		return;
+	}
+
+	log_message(file, "[DIR] Files sent to client\n");
+	return;
 
 	return;
 }
@@ -168,7 +257,7 @@ void ser_cd(int socket_desc, char *file)
 	path[len] = '\0';
 
 	chdirready = chdir(path);
-	
+
 	if (chdirready == 0)
 	{
 		status = SUCCESS_CODE;

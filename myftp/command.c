@@ -98,6 +98,71 @@ void cmd_prompt(int socket_desc)
 // list files in server
 void cli_fdr(int socket_desc)
 {
+
+	// Variable to store the response from server
+	char buffer[MAX_BLOCK_SIZE];
+	char ser_files[MAX_BLOCK_SIZE];
+	int len;
+
+	memset(buffer, 0, MAX_BLOCK_SIZE);
+	memset(ser_files, 0, MAX_BLOCK_SIZE);
+
+	
+	buffer[0] = OP_FDR;
+
+	// write OPCODE to server
+	if ((writen(socket_desc, buffer, 1)) < 0)
+	{
+		printf("\tClient: Failed to write OPCODE to server.\n");
+		return;
+	}
+
+	// read OPCODE from server
+	if ((readn(socket_desc, &buffer[0], MAX_BLOCK_SIZE)) < 0)
+	{
+		printf("\tClient: Failed to read OPCODE from server.\n");
+		return;
+	}
+
+	if (!(buffer[0] == OP_FDR))
+	{
+		printf("\tClient: Failed to read DIR op code\n");
+		return;
+	}
+
+	if ((readn(socket_desc, &buffer[1], MAX_BLOCK_SIZE)) < 0)
+	{
+		printf("\tClient: Failed to read ack code\n");
+		return;
+	}
+
+	// Check if the server is ready to send the files
+	if (buffer[1] == SUCCESS_CODE)
+	{
+
+		// read the files from server
+		if ((readn(socket_desc, &buffer[2], MAX_BLOCK_SIZE)) < 0)
+		{
+			printf("\tClient: Failed to read length of server file path\n");
+			return;
+		}
+
+		// copy 4 bytes of the length
+		memcpy(&len, &buffer[2], 2);
+		len = (int)ntohs(len);
+
+		// read the server file path
+		readn(socket_desc, ser_files, sizeof(buffer));
+
+		// print the server file path
+		printf("\t%s\n", ser_files);
+	}
+	else
+	{
+		printf("\tClient: Failed: Status code was '1'\n");
+	}
+
+
 	return;
 }
 
@@ -206,55 +271,71 @@ void cli_cd(int socket_desc, char *cmd_path)
 	char buffer[MAX_BLOCK_SIZE];
 	char opcode, status;
 	int len, convertedlen;
+
 	buffer[0] = OP_CD;
-	// write opcode to server
+
+	// write OPCODE to server
 	if ((writen(socket_desc, &buffer[0], 1)) < 0)
 	{
-		printf("\tFailed to write opcode to server.\n");
+		printf("\tClient: Failed to write opcode to server.\n");
 		return;
 	}
+
 	len = strlen(cmd_path);
 	convertedlen = htons(len);
 	memcpy(&buffer[1], &convertedlen, 2);
+
 	// write file length to server
 	if ((writen(socket_desc, &buffer[1], 2)) < 0)
 	{
-		printf("\tFailed to write file length to server.\n");
+		printf("\tClient: Failed to write file length to server.\n");
 		return;
 	}
+
 	// write file path to server
 	if ((writen(socket_desc, &cmd_path[0], len)) < 0)
 	{
-		printf("\tFailed to write file path to server.\n");
+		printf("\tClient: Failed to write file path to server.\n");
 		return;
 	}
+
 	memset(buffer, 0, MAX_BLOCK_SIZE);
-	// read opcode
+
+
+	// read OPCODE from server
 	if ((readn(socket_desc, &buffer[0], MAX_BLOCK_SIZE)) < 0)
 	{
-		printf("\tFailed to read opcode from server.\n");
+		printf("\tClient: Failed to read OPCODE from server.\n");
 		return;
 	}
+
 	memcpy(&opcode, &buffer[0], 1);
+
+	// check if OPCODE is valid
 	if (opcode != OP_CD)
 	{
-		printf("\tInvalid op code from server.\n");
+		printf("\tClient: Invalid OPCODE from server.\n");
 		return;
 	}
+
+	// read status code from server
 	if ((readn(socket_desc, &buffer[1], MAX_BLOCK_SIZE)) < 0)
 	{
-		printf("\tFailed to read status from server.\n");
+		printf("\tClient: Failed to read status from server.\n");
 		return;
 	}
+
 	memcpy(&status, &buffer[1], 1);
+
+	// check if status code is valid
 	if (status == SUCCESS_CODE)
 	{
-		printf("\tCD to new directory: %s.\n", cmd_path);
+		printf("\tClient: CD to new directory: %s.\n", cmd_path);
 		return;
 	}
 	else if (status == ERROR_CODE)
 	{
-		printf("\tFailed to CD to new directory.\n");
+		printf("\tClient: Failed to CD to new directory.\n");
 		return;
 	}
 	return;
@@ -275,11 +356,13 @@ void cli_lcd(char *cmd_path)
 // upload file from client to server
 void cli_put(int socket_desc, char *filename)
 {
+
 }
 
 // download file from server to client
 void cli_get(int socket_desc, char *file_name)
 {
+	
 	return;
 }
 
