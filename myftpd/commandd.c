@@ -157,6 +157,7 @@ void ser_fdr(int socket_desc, char *file)
 		return;
 	}
 
+	// write files to client
 	nw = writen(socket_desc, files, nr);
 	if (nw < 0)
 	{
@@ -231,6 +232,7 @@ void ser_cd(int socket_desc, char *file)
 	int len;
 	int chdirready;
 
+	// read the file length from client
 	if ((readn(socket_desc, &buf[0], MAX_BLOCK_SIZE)) < 0)
 	{
 		log_message(file, "[CD] failed to read file length.");
@@ -243,6 +245,8 @@ void ser_cd(int socket_desc, char *file)
 
 	memcpy(&len, &buf[0], 2);
 	len = ntohs(len);
+
+	// read path from client
 	if ((readn(socket_desc, &buf[2], MAX_BLOCK_SIZE)) < 0)
 	{
 		log_message(file, "[CD] failed to read file path.");
@@ -258,6 +262,7 @@ void ser_cd(int socket_desc, char *file)
 
 	chdirready = chdir(path);
 
+  // Check if chdir was successful
 	if (chdirready == 0)
 	{
 		status = SUCCESS_CODE;
@@ -272,6 +277,7 @@ void ser_cd(int socket_desc, char *file)
 	memset(buf, 0, MAX_BLOCK_SIZE);
 	buf[0] = OP_CD;
 
+	// Write OPCODE to client
 	if ((writen(socket_desc, &buf[0], 1)) < 0)
 	{
 		log_message(file, "[CD] failed to write opcode to client.");
@@ -280,13 +286,13 @@ void ser_cd(int socket_desc, char *file)
 
 	buf[1] = status;
 
+	// Write status to client
 	if ((writen(socket_desc, &buf[1], 1)) < 0)
 	{
 		log_message(file, "[CD] failed to write status to client.");
 		return;
 	}
 
-	// printf("[CD] CD function ended.\n");
 	log_message(file, "[CD] CD function ended.");
 	return;
 }
