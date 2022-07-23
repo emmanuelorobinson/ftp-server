@@ -38,7 +38,7 @@ void log_message(char *file, const char *format, ...)
 
 void serve_a_client(int sd, char *file)
 {
-	int nr, nw;
+	int nr;
 	char buf[MAX_BLOCK_SIZE];
 
 	while (1)

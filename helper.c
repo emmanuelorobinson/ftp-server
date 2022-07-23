@@ -1,16 +1,16 @@
 #include  <unistd.h>
 #include  <sys/types.h>
 #include  <netinet/in.h> /* struct sockaddr_in, htons(), htonl(), */
-#include  "stream.h"
+#include "helper.h"
 #include "string.h"
 
 int freadn(int sd, char *buf, int bufsize)
 {
 	int nr = 1;
 	int n = 0;
-	for (n = 0; (n < nbytes) && (nr > 0); n += nr)
+	for (n = 0; (n < bufsize) && (nr > 0); n += nr)
     	{
-		if ((nr = read(sd, buf+n, nbytes-n)) < 0)
+		if ((nr = read(sd, buf+n, bufsize-n)) < 0)
 		{
 			return (nr);
 		}

@@ -30,13 +30,13 @@ void cmd_prompt(int socket_desc);
  *  Return:		void
  *
 */
-void cli_fdr(int socket_desc);
+void cli_dir(int socket_desc);
 
 /** Purpose:	To print out the files present in current working directory of client
  *  Return:		void
  *
 */
-void cli_lfdr();
+void cli_ldir();
 
 /** Purpose:	To send and receive the current working directory of the server
  *  Param:		socket descriptor of connection

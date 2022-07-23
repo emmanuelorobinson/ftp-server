@@ -38,7 +38,7 @@ void serve_a_client(int socket_desc, char *file);
  *  Return:	void
  *
 */
-void ser_fdr(int socket_desc, char *file);
+void ser_dir(int socket_desc, char *file);
 
 /** Purpose:	To send the current working directory of the server
  *  Param:	socket descriptor of connection, logfile
