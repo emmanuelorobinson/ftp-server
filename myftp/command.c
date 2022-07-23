@@ -400,7 +400,7 @@ void cli_put(int socket_desc, char *filename)
 	}
 
 	// send file name
-	if (writen(socket_desc, file_name, file_len) < 0)
+	if (fwriten(socket_desc, file_name, file_len) < 0)
 	{
 		fprintf(stderr, "Client: Failed to send filename\n");
 		return;
@@ -435,7 +435,7 @@ void cli_put(int socket_desc, char *filename)
 			return;
 		}
 
-		while ((nr = readn(fd, buf, BUF_SIZE)) > 0)
+		while ((nr = freadn(fd, buf, BUF_SIZE)) > 0)
 		{
 			if (writen(socket_desc, buf, nr) == -1)
 			{
@@ -488,7 +488,7 @@ void cli_get(int socket_desc, char *file_name)
 	}
 
 	// send file name to server
-	if (writen(socket_desc, file_name, file_len) == -1)
+	if (fwriten(socket_desc, file_name, file_len) == -1)
 	{
 		fprintf(stderr, "Client: Failed to write filename\n");
 		return;
@@ -540,13 +540,13 @@ void cli_get(int socket_desc, char *file_name)
 				block_size = file_size;
 			}
 
-			if ((nr = readn(socket_desc, buf, block_size)) == -1)
+			if ((nr = freadn(socket_desc, buf, block_size)) == -1)
 			{
 				fprintf(stdout, "Client: Failed to read data\n");
 				return;
 			}
 
-			if ((nw = writen(fd, buf, nr)) < nr)
+			if ((nw = fwriten(fd, buf, nr)) < nr)
 			{
 				fprintf(stdout, "Client: Failed to write data\n");
 				return;

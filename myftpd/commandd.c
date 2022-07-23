@@ -318,7 +318,7 @@ void ser_put(int socket_desc, char *file)
 
 	// read the file name
 	char file_name[file_len + 1];
-	if (readn(socket_desc, file_name, file_len) == -1)
+	if (freadn(socket_desc, file_name, file_len) == -1)
 	{
 		log_message(file, "[PUT] Failed to read filename\n");
 		return;
@@ -402,13 +402,13 @@ void ser_put(int socket_desc, char *file)
 		if (block_size > file_size)
         	block_size = file_size;
 
-		if ((nr = readn(socket_desc, buf, block_size)) == -1)
+		if ((nr = freadn(socket_desc, buf, block_size)) == -1)
 		{
 			log_message(file, "[PUT] Failed to read file content\n");
 			return;
 		}
 
-		if ((nw = writen(fd, buf, nr)) < nr)
+		if ((nw = fwriten(fd, buf, nr)) < nr)
 		{
 			log_message(file, "[PUT] Failed to write file content\n");
 			return;
@@ -443,7 +443,7 @@ void ser_get(int socket_desc, char *file)
 
 	// read the file name
 	char file_name[file_len + 1];
-	if (readn(socket_desc, file_name, file_len) == -1)
+	if (freadn(socket_desc, file_name, file_len) == -1)
 	{
 		log_message(file, "[GET] Failed to read filename\n");
 		return;
@@ -529,7 +529,7 @@ void ser_get(int socket_desc, char *file)
 	// send file contents
 	while ((nr = readn(fd, buf, BUF_SIZE)) > 0)
 	{
-		if (writen(socket_desc, buf, nr) == -1)
+		if (fwriten(socket_desc, buf, nr) == -1)
 		{
 			log_message(file, "[GET] Failed to send file content\n");
 			return;
