@@ -40,7 +40,7 @@ void cmd_prompt(int socket_desc)
 			{
 				if (strcmp(tokenArray[0], CMD_FDR) == 0)
 				{
-					cli_fdr(socket_desc);
+					cli_dir(socket_desc);
 				}
 				else if (strcmp(tokenArray[0], CMD_PWD) == 0)
 				{
@@ -48,7 +48,7 @@ void cmd_prompt(int socket_desc)
 				}
 				else if (strcmp(tokenArray[0], CMD_LFDR) == 0)
 				{
-					cli_lfdr();
+					cli_ldir();
 				}
 				else if (strcmp(tokenArray[0], CMD_LPWD) == 0)
 				{
@@ -96,7 +96,7 @@ void cmd_prompt(int socket_desc)
 }
 
 // list files in server
-void cli_fdr(int socket_desc)
+void cli_dir(int socket_desc)
 {
 
 	// Variable to store the response from server
@@ -108,7 +108,7 @@ void cli_fdr(int socket_desc)
 	memset(ser_files, 0, MAX_BLOCK_SIZE);
 
 	
-	buffer[0] = OP_FDR;
+	buffer[0] = OP_DIR;
 
 	// write OPCODE to server
 	if ((writen(socket_desc, buffer, 1)) < 0)
@@ -124,7 +124,7 @@ void cli_fdr(int socket_desc)
 		return;
 	}
 
-	if (!(buffer[0] == OP_FDR))
+	if (!(buffer[0] == OP_DIR))
 	{
 		printf("\tClient: Failed to read DIR op code\n");
 		return;
@@ -167,7 +167,7 @@ void cli_fdr(int socket_desc)
 }
 
 // list files in client
-void cli_lfdr()
+void cli_ldir()
 {
 	// variables
 	char *filearray[MAX_TOKEN];

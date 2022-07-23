@@ -59,9 +59,9 @@ void serve_a_client(int sd, char *file)
 		{
 			ser_pwd(sd, file);
 		}
-		else if (buf[0] == OP_FDR)
+		else if (buf[0] == OP_DIR)
 		{
-			ser_fdr(sd, file);
+			ser_dir(sd, file);
 		}
 		else if (buf[0] == OP_CD)
 		{
@@ -75,13 +75,13 @@ void serve_a_client(int sd, char *file)
 }
 
 // List files in server
-void ser_fdr(int socket_desc, char *file)
+void ser_dir(int socket_desc, char *file)
 {
 	// variables
 	char buf[MAX_BLOCK_SIZE];
 	int len, nw, nr;
 	char status;
-	buf[0] = OP_FDR;
+	buf[0] = OP_DIR;
 
 	DIR *dp;
 	struct dirent *direntp;

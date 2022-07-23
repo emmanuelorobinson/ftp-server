@@ -2,7 +2,7 @@
 #define OP_PUT	'P'
 #define OP_GET	'G'
 #define OP_PWD	'W'
-#define OP_FDR	'F'
+#define OP_DIR	'F'
 #define OP_CD	'C'
 #define OP_DATA	'D'
 
