@@ -300,11 +300,242 @@ void ser_cd(int socket_desc, char *file)
 // PUT from client to upload files to server
 void ser_put(int socket_desc, char *file)
 {
-	return;
+	// variables
+	char op_code, ack_code;
+	int file_len, fd, file_size, block_size, nr, nw;
+	char buf[BUF_SIZE];
+
+	// read the file length
+	if (read_length(socket_desc, &file_len) == -1)
+	{
+		log_message(file, "[PUT] Failed to read file length\n");
+		return;
+	}
+	else
+	{
+		log_message(file, "[PUT] Successful read file length %d\n", file_len);
+	}
+
+	// read the file name
+	char file_name[file_len + 1];
+	if (readn(socket_desc, file_name, file_len) == -1)
+	{
+		log_message(file, "[PUT] Failed to read filename\n");
+		return;
+	}
+	else
+    	{
+		file_name[file_len] = '\0'; // set last character to null
+		log_message(file, "[PUT] Successful read filename %s\n", file_name);
+	}
+
+	// file validation
+	ack_code = SUCCESS_CODE;
+
+	if ((fd = open(file_name, O_RDONLY)) >= 0)
+	{
+		ack_code = FILE_EXIST;
+		log_message(file, "[PUT] Filename exist\n");
+	}
+	else if ((fd = open(file_name, O_WRONLY|O_CREAT, 0766)) == -1)
+	{
+		ack_code = ERROR_CODE;
+		log_message(file, "[PUT] Failed to create file\n");
+	}
+
+	// write the opcode to client
+	if (write_opcode(socket_desc, OP_PUT) == -1)
+	{
+		log_message(file, "[PUT] Failed to write opcode\n");
+		return;
+	}
+    	else
+	{
+		log_message(file, "[PUT] Successful written opcode\n");
+	}
+
+	// write the ackcode to client
+	if (write_opcode(socket_desc, ack_code) == -1)
+	{
+		log_message(file, "[PUT] Failed to write ackcode\n");
+		return;
+	}
+    	else
+	{
+		log_message(file, "[PUT] Successful written ackcode\n");
+	}
+
+	// exit if ackcode is not SUCCESS_CODE
+	if (ack_code != SUCCESS_CODE)
+	{
+		log_message(file, "[PUT] PUT request failed\n");
+		return;
+	}
+
+	// read opcode respond from client
+	if (read_opcode(socket_desc, &op_code) == -1)
+	{
+		log_message(file, "[PUT] Failed to read opcode\n");
+		return;
+	}
+	else
+	{
+		log_message(file, "[PUT] Successful reading opcode\n");
+	}
+
+	// read the file size
+	if (read_length(socket_desc, &file_size) == -1)
+	{
+		log_message(file, "[PUT] Failed to read file size\n");
+		return;
+	}
+	else
+	{
+		log_message(file, "[PUT] Successful read file size %d\n", file_size);
+	}
+
+	// read the file contents
+	block_size = BUF_SIZE;
+	while (file_size > 0)
+	{
+		// check if block size < remaining file size
+		if (block_size > file_size)
+        	block_size = file_size;
+
+		if ((nr = readn(socket_desc, buf, block_size)) == -1)
+		{
+			log_message(file, "[PUT] Failed to read file content\n");
+			return;
+		}
+
+		if ((nw = writen(fd, buf, nr)) < nr)
+		{
+			log_message(file, "[PUT] Failed to write file content\n");
+			return;
+		}
+
+		file_size -= nw;
+	}
+
+	close(fd); // close file descriptor
+	log_message(file, "[PUT] File received\n");
 }
 
 // GET from client to download named file from server
 void ser_get(int socket_desc, char *file)
 {
-	return;
+	// variables
+	char ack_code;
+	int fd, file_size, file_len, nr;
+	struct stat stats;
+	char buf[BUF_SIZE];
+
+	// read the file length
+	if (read_length(socket_desc, &file_len) == -1)
+	{
+		log_message(file, "[GET] Failed to read file length\n");
+		return;
+	}
+	else
+	{
+		log_message(file, "[GET] Successful read file length %d\n", file_len);
+	}
+
+	// read the file name
+	char file_name[file_len + 1];
+	if (readn(socket_desc, file_name, file_len) == -1)
+	{
+		log_message(file, "[GET] Failed to read filename\n");
+		return;
+	}
+	else
+    	{
+		file_name[file_len] = '\0'; // set last character to null
+		log_message(file, "[GET] Successful read filename %s\n", file_name);
+	}
+
+	// file validation
+	ack_code = SUCCESS_CODE;
+
+	if (access(file_name, F_OK) != 0)
+	{
+		ack_code = FILE_NOT_EXIST;
+		log_message(file, "[GET] File does not exist\n");
+	}
+	else if ((fd = open(file_name, O_RDONLY)) < 0)
+	{
+		ack_code = ERROR_CODE;
+		log_message(file, "[GET] Failed to read file\n");
+	}
+    	else if(lstat(file_name, &stats) < 0) // check for fstat
+    	{
+		ack_code = ERROR_CODE;
+		log_message(file, "[GET] Failed to read fstat\n");
+    	}
+
+	// write the opcode to client
+	if (write_opcode(socket_desc, OP_GET) == -1)
+	{
+		log_message(file, "[GET] Failed to write opcode\n");
+		return;
+	}
+    	else
+	{
+		log_message(file, "[GET] Successful written opcode\n");
+	}
+
+	// write the ackcode to client
+	if (write_opcode(socket_desc, ack_code) == -1)
+	{
+		log_message(file, "[GET] Failed to write ackcode\n");
+		return;
+	}
+    	else
+	{
+		log_message(file, "[GET] Successful written ackcode\n");
+	}
+
+	// exit if ackcode is not SUCCESS_CODE
+	if (ack_code != SUCCESS_CODE)
+	{
+		log_message(file, "[GET] GET request failed\n");
+		return;
+	}
+
+	// write opcode to client
+	if (write_opcode(socket_desc, OP_DATA) == -1)
+	{
+		log_message(file, "[GET] Failed to write opcode\\n");
+		return;
+	}
+	else
+	{
+		log_message(file, "[GET] Successful written opcode\n");
+	}
+
+	file_size = stats.st_size; // set file size
+
+	// send file size to client
+	if (write_length(socket_desc, file_size) == -1)
+	{
+		log_message(file, "[GET] Failed to send file length\n");
+		return;
+	}
+	else
+	{
+		log_message(file, "[GET] Successful send file size %d\n", file_size);
+	}
+
+	// send file contents
+	while ((nr = readn(fd, buf, BUF_SIZE)) > 0)
+	{
+		if (writen(socket_desc, buf, nr) == -1)
+		{
+			log_message(file, "[GET] Failed to send file content\n");
+			return;
+		}
+	}
+
+	close(fd); // close file descriptor
+	log_message(file, "[GET] File sent\n");
 }

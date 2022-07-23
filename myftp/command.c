@@ -356,14 +356,216 @@ void cli_lcd(char *cmd_path)
 // upload file from client to server
 void cli_put(int socket_desc, char *filename)
 {
+	// variables
+	char op_code, ack_code;
+	int fd, file_size, nr;
+	struct stat stats;
+	char buf[BUF_SIZE]; // buffer for file content
 
+	int file_len = strlen(filename); // set file length
+	char file_name[file_len + 1]; // define file_name
+
+	strcpy(file_name, filename); // copy filename to file_name
+
+	file_name[file_len] = '\0'; // set last character to null
+
+	// file validation
+	if ((fd = open(file_name, O_RDONLY)) == -1)
+	{
+		fprintf(stderr, "Client: Failed to read source file\n");
+		return;
+	}
+
+    	// check for fstat
+    	if(fstat(fd, &stats) < 0)
+    	{
+		fprintf(stderr, "Client: Failed to read fstat\n");
+        	return;
+    	}
+
+	file_size = stats.st_size; // set file size
+
+	// send opcode to server
+	if (write_opcode(socket_desc, OP_PUT) == -1)
+	{
+		fprintf(stderr, "Client: Failed to write opcode\n");
+		return;
+	}
+
+	// sent file length
+	if (write_length(socket_desc, file_len) == -1)
+	{
+		fprintf(stderr, "Client: Failed to send length\n");
+		return;
+	}
+
+	// send file name
+	if (writen(socket_desc, file_name, file_len) < 0)
+	{
+		fprintf(stderr, "Client: Failed to send filename\n");
+		return;
+	}
+
+	// read opcode from server
+	if (read_opcode(socket_desc, &op_code) == -1)
+	{
+		fprintf(stderr, "Client: Failed to read opcode\n");
+		return;
+	}
+
+	// read ackcode from server
+	if (read_opcode(socket_desc, &ack_code) == -1)
+	{
+		fprintf(stderr, "Client: Failed to read ackcode\n");
+		return;
+	}
+
+	// send file data
+	if (ack_code == SUCCESS_CODE)
+	{
+		if (write_opcode(socket_desc, OP_DATA) == -1)
+		{
+			fprintf(stderr, "Client: Failed to write opcode\n");
+			return;
+		}
+
+		if (write_length(socket_desc, file_size) == -1)
+		{
+			fprintf(stderr, "Client: Failed to send length\n");
+			return;
+		}
+
+		while ((nr = readn(fd, buf, BUF_SIZE)) > 0)
+		{
+			if (writen(socket_desc, buf, nr) == -1)
+			{
+				fprintf(stdout, "Client: Failed to send file content\n");
+				return;
+			}
+		}
+	}
+	else if (ack_code == FILE_EXIST)
+	{
+		fprintf(stdout, "Server: File exist on server. Unable to send\n");
+	}
+	else if (ack_code == ERROR_CODE)
+	{
+		fprintf(stdout, "Server: Error in sending file\n");
+	}
+
+	close(fd);
 }
 
 // download file from server to client
 void cli_get(int socket_desc, char *file_name)
 {
-	
-	return;
+	// variables
+	char op_code, ack_code;
+	int fd, file_size, block_size, nr, nw;
+	char buf[BUF_SIZE]; // buffer for file content
+
+	int file_len = strlen(file_name);
+
+	// check for file exist or error creating file
+	if (access(file_name, F_OK) >= 0)
+	{
+		fprintf(stderr, "Client: File exists in current folder. Unable to get\n");
+		return;
+	}
+
+	// send opcode to server
+	if (write_opcode(socket_desc, OP_GET) == -1)
+	{
+		fprintf(stderr, "Client: Failed to write opcode\n");
+		return;
+	}
+
+	// send file length to server
+	if (write_length(socket_desc, file_len) == -1)
+	{
+		fprintf(stderr, "Client: Failed to write length\n");
+		return;
+	}
+
+	// send file name to server
+	if (writen(socket_desc, file_name, file_len) == -1)
+	{
+		fprintf(stderr, "Client: Failed to write filename\n");
+		return;
+	}
+
+	// read opcode from server
+	if (read_opcode(socket_desc, &op_code) == -1)
+	{
+		fprintf(stderr, "Client: Failed to read opcode\n");
+		return;
+	}
+
+	// read ackcode from server
+	if (read_opcode(socket_desc, &ack_code) == -1)
+	{
+		fprintf(stderr, "Client: Failed to read ackcode\n");
+		return;
+	}
+
+	if ((fd = open(file_name, O_WRONLY|O_CREAT, 0766)) < 0)
+	{
+		ack_code = ERROR_CODE;
+		fprintf(stderr, "Client: Failed to create file\n");
+		return;
+	}
+
+	if (ack_code == SUCCESS_CODE)
+	{
+		// read opcode from server
+		if (read_opcode(socket_desc, &op_code) == -1)
+		{
+			fprintf(stderr, "Client: Failed to read ackcode\n");
+			return;
+		}
+
+		// read the file size
+		if (read_length(socket_desc, &file_size) == -1)
+		{
+			fprintf(stderr, "Client: Failed to read size\n");
+			return;
+		}
+
+		block_size = BUF_SIZE; // set block size
+
+		while (file_size > 0)
+		{
+			if (block_size > file_size)
+			{
+				block_size = file_size;
+			}
+
+			if ((nr = readn(socket_desc, buf, block_size)) == -1)
+			{
+				fprintf(stdout, "Client: Failed to read data\n");
+				return;
+			}
+
+			if ((nw = writen(fd, buf, nr)) < nr)
+			{
+				fprintf(stdout, "Client: Failed to write data\n");
+				return;
+			}
+			file_size -= nw;
+		}
+	}
+	else if (ack_code == FILE_NOT_EXIST)
+	{
+		fprintf(stdout, "Server: File does not exist on server\n");
+		unlink(file_name);
+	}
+	else if (ack_code == ERROR_CODE)
+	{
+		fprintf(stdout, "Server: Error sending file to client\n");
+		unlink(file_name);
+	}
+
+	close(fd);
 }
 
 // display the help menu information
