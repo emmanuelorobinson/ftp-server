@@ -527,7 +527,7 @@ void ser_get(int socket_desc, char *file)
 	}
 
 	// send file contents
-	while ((nr = readn(fd, buf, BUF_SIZE)) > 0)
+	while ((nr = freadn(fd, buf, BUF_SIZE)) > 0)
 	{
 		if (fwriten(socket_desc, buf, nr) == -1)
 		{

@@ -437,7 +437,7 @@ void cli_put(int socket_desc, char *filename)
 
 		while ((nr = freadn(fd, buf, BUF_SIZE)) > 0)
 		{
-			if (writen(socket_desc, buf, nr) == -1)
+			if (fwriten(socket_desc, buf, nr) == -1)
 			{
 				fprintf(stdout, "Client: Failed to send file content\n");
 				return;
