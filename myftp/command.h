@@ -11,7 +11,7 @@
 #include "../stream.h"     /* head file for stream read and write */
 #include "../netprotocol.h"  /* head file for netprotocol */
 #include "../token.h"
-#include "../helper.h"
+
 
 #define MAX_NUM_COMMANDS    1000
 #define MAX_NUM_CHAR        1000
