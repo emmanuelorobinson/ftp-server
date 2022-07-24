@@ -107,7 +107,6 @@ void cli_dir(int socket_desc)
 	memset(buffer, 0, MAX_BLOCK_SIZE);
 	memset(ser_files, 0, MAX_BLOCK_SIZE);
 
-	
 	buffer[0] = OP_DIR;
 
 	// write OPCODE to server
@@ -161,7 +160,6 @@ void cli_dir(int socket_desc)
 	{
 		printf("\tClient: Failed: Status code was '1'\n");
 	}
-
 
 	return;
 }
@@ -301,7 +299,6 @@ void cli_cd(int socket_desc, char *cmd_path)
 
 	memset(buffer, 0, MAX_BLOCK_SIZE);
 
-
 	// read OPCODE from server
 	if ((readn(socket_desc, &buffer[0], MAX_BLOCK_SIZE)) < 0)
 	{
@@ -356,216 +353,344 @@ void cli_lcd(char *cmd_path)
 // upload file from client to server
 void cli_put(int socket_desc, char *filename)
 {
-	// variables
-	char op_code, ack_code;
-	int fd, file_size, nr;
-	struct stat stats;
-	char buf[BUF_SIZE]; // buffer for file content
+	char OPCODE, ackcode;
+	int fsize, nr, file_len, total = 0;
+	char buf[MAX_BLOCK_SIZE];
 
-	int file_len = strlen(filename); // set file length
-	char file_name[file_len + 1]; // define file_name
+	memset(buf, 0, MAX_BLOCK_SIZE); // set buffer to zero
+	char file_name[MAX_BLOCK_SIZE]; // use for storing filename
+	strcpy(file_name, filename);		// string copy filename
 
-	strcpy(file_name, filename); // copy filename to file_name
+	FILE *file;										// create file pointer
+	file = fopen(file_name, "r"); // open client selected file
 
-	file_name[file_len] = '\0'; // set last character to null
-
-	// file validation
-	if ((fd = open(file_name, O_RDONLY)) == -1)
+	// check if file exist on client
+	if (file != NULL)
 	{
-		fprintf(stderr, "Client: Failed to read source file\n");
-		return;
-	}
+		// write opcode to server
+		buf[0] = OP_PUT;
+		writen(socket_desc, &buf[0], 1);
+		memset(buf, 0, MAX_BLOCK_SIZE);
 
-    	// check for fstat
-    	if(fstat(fd, &stats) < 0)
-    	{
-		fprintf(stderr, "Client: Failed to read fstat\n");
-        	return;
-    	}
+		// get file name length
+		file_len = strlen(file_name);
+		int templen = htons(file_len);
+		file_name[file_len] = '\0';
+		memcpy(&buf[0], &templen, 2);
 
-	file_size = stats.st_size; // set file size
+		writen(socket_desc, &buf[0], 2);
+		memcpy(&buf[2], &file_name, file_len);
+		writen(socket_desc, &buf[2], file_len);
 
-	// send opcode to server
-	if (write_opcode(socket_desc, OP_PUT) == -1)
-	{
-		fprintf(stderr, "Client: Failed to write opcode\n");
-		return;
-	}
+		memset(buf, 0, MAX_BLOCK_SIZE);
 
-	// sent file length
-	if (write_length(socket_desc, file_len) == -1)
-	{
-		fprintf(stderr, "Client: Failed to send length\n");
-		return;
-	}
-
-	// send file name
-	if (fwriten(socket_desc, file_name, file_len) < 0)
-	{
-		fprintf(stderr, "Client: Failed to send filename\n");
-		return;
-	}
-
-	// read opcode from server
-	if (read_opcode(socket_desc, &op_code) == -1)
-	{
-		fprintf(stderr, "Client: Failed to read opcode\n");
-		return;
-	}
-
-	// read ackcode from server
-	if (read_opcode(socket_desc, &ack_code) == -1)
-	{
-		fprintf(stderr, "Client: Failed to read ackcode\n");
-		return;
-	}
-
-	// send file data
-	if (ack_code == SUCCESS_CODE)
-	{
-		if (write_opcode(socket_desc, OP_DATA) == -1)
+		// read OPCODE from server
+		if (readn(socket_desc, &buf[0], MAX_BLOCK_SIZE) < 0)
 		{
-			fprintf(stderr, "Client: Failed to write opcode\n");
+			printf("\tClient: Failed to read OPCODE from server.\n");
 			return;
 		}
-
-		if (write_length(socket_desc, file_size) == -1)
+		else
 		{
-			fprintf(stderr, "Client: Failed to send length\n");
-			return;
+			memcpy(&OPCODE, &buf[0], 1);
 		}
 
-		while ((nr = freadn(fd, buf, BUF_SIZE)) > 0)
+		// check if OPCODE is valid
+		if (readn(socket_desc, &buf[1], MAX_BLOCK_SIZE) < 0)
 		{
-			if (fwriten(socket_desc, buf, nr) == -1)
+			printf("\tClient: Failed to read ackcode from server.\n");
+			return;
+		}
+		else
+		{
+			memcpy(&ackcode, &buf[1], 1);
+		}
+
+		// check if ackcode is valid
+		if (ackcode == SUCCESS_CODE)
+		{
+			memset(buf, 0, MAX_BLOCK_SIZE);
+			OPCODE = OP_DATA;
+			memcpy(&buf[0], &OPCODE, 1);
+
+			// write OPCODE to server
+			if (writen(socket_desc, &buf[0], 1) < 0)
 			{
-				fprintf(stdout, "Client: Failed to send file content\n");
+				printf("\tClient: Failed to write OPCODE to server\n");
 				return;
 			}
+
+			// get file size and send to server
+			struct stat fst;
+
+			if (stat(file_name, &fst) == -1)
+			{
+				printf("\tClient: Failed to get file stat\n");
+				return;
+			}
+
+			// get file size and convert it to network btye order
+			fsize = (int)fst.st_size;
+			templen = htonl(fsize);
+			memcpy(&buf[1], &templen, 4);
+
+			// check if file size is send to server
+			if (writen(socket_desc, &buf[1], 4) < 0)
+			{
+				printf("\tClient: Failed to write file size to server\n");
+				return;
+			}
+
+			// getting file descriptor
+			int fd = fileno(file);
+			char block[MAX_BLOCK_SIZE];
+			memset(block, '\0', MAX_BLOCK_SIZE);
+			lseek(fd, 0, SEEK_SET);
+
+			// check if file size is smaller than data buffer
+			if (fsize < MAX_BLOCK_SIZE)
+			{
+				// read and write first block of data
+				nr = read(fd, block, fsize);
+				writen(socket_desc, block, MAX_BLOCK_SIZE);
+			}
+			else
+			{
+				// if current sent block of data is smaller than total file size
+				while (total < fsize)
+				{
+					memset(block, '\0', MAX_BLOCK_SIZE);
+					lseek(fd, total, SEEK_SET);
+
+					if ((fsize - total) > MAX_BLOCK_SIZE)
+					{
+						nr = read(fd, block, MAX_BLOCK_SIZE);
+					}
+					else
+					{
+						nr = read(fd, block, (fsize - total));
+					}
+
+					writen(socket_desc, block, MAX_BLOCK_SIZE);
+					total += nr;
+				}
+			}
+
+			// read server response
+			memset(buf, 0, MAX_BLOCK_SIZE);
+			// check if can read opcode from server
+
+			if (readn(socket_desc, &buf[0], MAX_BLOCK_SIZE) < 0)
+			{
+				printf("\tClient: Error: Not able to read OPCODE from server 3.\n");
+				return;
+			}
+
+			memcpy(&OPCODE, &buf[0], 1);
+
+			// check if can read ack code from server
+			if (readn(socket_desc, &buf[1], MAX_BLOCK_SIZE) < 0)
+			{
+				printf("\tClient: Error: Not able to read ack code from server 3.\n");
+			}
+			memcpy(&ackcode, &buf[1], 1);
+
+			// check if opcode is correct
+			if (OPCODE == OP_DATA)
+			{
+
+				// check if ackcode is 0, which is file transfer done
+				if (ackcode == SUCCESS_CODE)
+				{
+					printf("\tClient: File is transfer succesfully.\n");
+				}
+				else if (ackcode == ERROR_CODE)
+				{
+					printf("\tClient: File failed to transfer succesfully.\n");
+				}
+			}
+		}
+
+		// if ackcode returns to be '1'
+		else if (ackcode == FILE_EXIST)
+		{
+			printf("\tClient: File already exist on server\n");
+			return;
 		}
 	}
-	else if (ack_code == FILE_EXIST)
+	else
 	{
-		fprintf(stdout, "Server: File exist on server. Unable to send\n");
+		printf("\tClient: File cannot be open.\n");
+		return;
 	}
-	else if (ack_code == ERROR_CODE)
-	{
-		fprintf(stdout, "Server: Error in sending file\n");
-	}
-
-	close(fd);
+	return;
 }
 
 // download file from server to client
 void cli_get(int socket_desc, char *file_name)
 {
-	// variables
-	char op_code, ack_code;
-	int fd, file_size, block_size, nr, nw;
-	char buf[BUF_SIZE]; // buffer for file content
+	char opcode, ackcode;
+	int fsize, nr, nw, file_len, total = 0, fd;
+	char buf[MAX_BLOCK_SIZE];
+	memset(buf, 0, MAX_BLOCK_SIZE);
 
-	int file_len = strlen(file_name);
+	char filename[MAX_BLOCK_SIZE]; // use for storing filename
+	strcpy(filename, file_name);	 // string copy filename
+	buf[0] = OP_GET;
 
-	// check for file exist or error creating file
-	if (access(file_name, F_OK) >= 0)
+	if (writen(socket_desc, &buf[0], 1) < 0)
 	{
-		fprintf(stderr, "Client: File exists in current folder. Unable to get\n");
+		printf("\tClient: Failed to write OPCODE to server.\n");
 		return;
 	}
 
-	// send opcode to server
-	if (write_opcode(socket_desc, OP_GET) == -1)
+	memset(buf, 0, MAX_BLOCK_SIZE);
+	file_len = strlen(filename);
+	int templen = htons(file_len);
+
+	filename[file_len] = '\0';
+
+	// write file name length to server
+	memcpy(&buf[0], &templen, 2);
+	if (writen(socket_desc, &buf[0], 2) < 0)
 	{
-		fprintf(stderr, "Client: Failed to write opcode\n");
+		printf("\tClient: Failed to write file length to server.\n");
 		return;
 	}
 
-	// send file length to server
-	if (write_length(socket_desc, file_len) == -1)
+	// write file name to server using file length
+	memcpy(&buf[2], &filename, file_len);
+	if (writen(socket_desc, &buf[2], file_len) < 0)
 	{
-		fprintf(stderr, "Client: Failed to write length\n");
+		printf("\tClient: Failed to write file name to server.\n");
 		return;
 	}
 
-	// send file name to server
-	if (fwriten(socket_desc, file_name, file_len) == -1)
+	// read server response
+	memset(buf, 0, MAX_BLOCK_SIZE);
+	if (readn(socket_desc, &buf[0], MAX_BLOCK_SIZE) < 0)
 	{
-		fprintf(stderr, "Client: Failed to write filename\n");
+		printf("\tClient: Failed to read OPCODE from server\n");
 		return;
 	}
 
-	// read opcode from server
-	if (read_opcode(socket_desc, &op_code) == -1)
+	memcpy(&opcode, &buf[0], 1);
+	if (readn(socket_desc, &buf[1], MAX_BLOCK_SIZE) < 0)
 	{
-		fprintf(stderr, "Client: Failed to read opcode\n");
+		printf("\tClient: Failed to read ackcode from server\n");
 		return;
 	}
 
-	// read ackcode from server
-	if (read_opcode(socket_desc, &ack_code) == -1)
+	memcpy(&ackcode, &buf[1], 1);
+	if (opcode == OP_GET)
 	{
-		fprintf(stderr, "Client: Failed to read ackcode\n");
-		return;
-	}
-
-	if ((fd = open(file_name, O_WRONLY|O_CREAT, 0766)) < 0)
-	{
-		ack_code = ERROR_CODE;
-		fprintf(stderr, "Client: Failed to create file\n");
-		return;
-	}
-
-	if (ack_code == SUCCESS_CODE)
-	{
-		// read opcode from server
-		if (read_opcode(socket_desc, &op_code) == -1)
+		if (ackcode == SUCCESS_CODE)
 		{
-			fprintf(stderr, "Client: Failed to read ackcode\n");
-			return;
-		}
-
-		// read the file size
-		if (read_length(socket_desc, &file_size) == -1)
-		{
-			fprintf(stderr, "Client: Failed to read size\n");
-			return;
-		}
-
-		block_size = BUF_SIZE; // set block size
-
-		while (file_size > 0)
-		{
-			if (block_size > file_size)
+			printf("\tClient: File is found on server.\n");
+			
+			memset(buf, 0, MAX_BLOCK_SIZE);
+			if (readn(socket_desc, &buf[0], MAX_BLOCK_SIZE) < 0)
 			{
-				block_size = file_size;
-			}
-
-			if ((nr = freadn(socket_desc, buf, block_size)) == -1)
-			{
-				fprintf(stdout, "Client: Failed to read data\n");
+				printf("\tClient: Failed to read OPCODE from server.\n");
 				return;
 			}
-
-			if ((nw = fwriten(fd, buf, nr)) < nr)
+			memcpy(&opcode, &buf[0], 1);
+			if (opcode == OP_DATA)
 			{
-				fprintf(stdout, "Client: Failed to write data\n");
+				// check if can read file size from client
+				if (readn(socket_desc, &buf[1], MAX_BLOCK_SIZE) < 0)
+				{
+					printf("\tClient: Failed to read file size from client\n");
+					return;
+				}
+
+				memcpy(&fsize, &buf[1], 4);
+				fsize = ntohl(fsize);
+
+				// create file
+				if ((fd = open(filename, O_WRONLY | O_CREAT, 0666)) != -1)
+				{
+					ackcode = SUCCESS_CODE;
+					char block[MAX_BLOCK_SIZE];
+					memset(block, '\0', MAX_BLOCK_SIZE);
+					lseek(fd, 0, SEEK_SET);
+
+					if (fsize < MAX_BLOCK_SIZE)
+					{
+						// read from socket stream to data block
+						nr = readn(socket_desc, block, MAX_BLOCK_SIZE);
+
+						// if failed to read set ackcode to '1'
+						if (nr < 0)
+						{
+							printf("Client: Failed to read file\n");
+							ackcode = ERROR_CODE;
+						}
+
+						nw = write(fd, block, fsize);
+						if (nw < 0)
+						{
+							printf("Client: Failed to write file\n");
+							ackcode = ERROR_CODE;
+						}
+					}
+					else
+					{
+
+						// if total transfer is less than file size
+						while (total < fsize)
+						{
+							memset(block, '\0', MAX_BLOCK_SIZE);
+							lseek(fd, total, SEEK_SET);
+
+							nr = readn(socket_desc, block, MAX_BLOCK_SIZE);
+							if (nr < 0)
+							{
+								printf("Client: Failed to read file\n");
+								ackcode = ERROR_CODE;
+							}
+
+							int leftover = fsize - total;
+
+							// if leftover is less than max block size
+							if (leftover < MAX_BLOCK_SIZE)
+							{
+								nw = write(fd, block, leftover);
+								if (nw < 0)
+								{
+									printf("Client: Failed to write file\n");
+									ackcode = ERROR_CODE;
+								}
+							}
+							else
+							{
+								// write to fd using the max block size
+								nw = write(fd, block, MAX_BLOCK_SIZE);
+								if (nw < 0)
+								{
+									printf("Client: Failed to write file\n");
+									ackcode = ERROR_CODE;
+								}
+							}
+							// add to total file count
+							total += nw;
+						}
+					}
+				}
+				printf("\tClient: File is recieved from server.\n");
+			}
+			else if (ackcode == FILE_NOT_EXIST)
+			{
+				printf("\tClient: Error: file is not found on server.\n");
 				return;
 			}
-			file_size -= nw;
+		}
+		else
+		{
+			printf("\tClient: Server send wrong opcode\n");
+			return;
 		}
 	}
-	else if (ack_code == FILE_NOT_EXIST)
-	{
-		fprintf(stdout, "Server: File does not exist on server\n");
-		unlink(file_name);
-	}
-	else if (ack_code == ERROR_CODE)
-	{
-		fprintf(stdout, "Server: Error sending file to client\n");
-		unlink(file_name);
-	}
-
-	close(fd);
 }
 
 // display the help menu information

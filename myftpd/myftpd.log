@@ -100,3 +100,40 @@
 8979 Jul 17 23:42 - [PWD] command sent
 8979 Jul 17 23:42 - [CD] CD command received.8979 Jul 17 23:42 - [CD] read file length.8979 Jul 17 23:42 - [CD] read file path.8979 Jul 17 23:42 - [CD] status is ready.8979 Jul 17 23:42 - [CD] CD function ended.8979 Jul 17 23:43 - [PWD] command received
 8979 Jul 17 23:43 - [PWD] command sent
+8925 Jul 24 11:50 - Log File:
+/workspaces/ftp-server/myftpd/myftpd.log
+8925 Jul 24 11:50 - Myftp server started up, listening on port 12345
+9321 Jul 24 11:50 - [PWD] command received
+9321 Jul 24 11:50 - [PWD] command sent
+9321 Jul 24 11:50 - Client session closed
+9738 Jul 24 11:51 - Log File:
+/workspaces/ftp-server/myftpd/myftpd.log
+9910 Jul 24 11:51 - Log File:
+/workspaces/ftp-server/myftpd/myftpd.log
+9910 Jul 24 11:51 - Myftp server started up, listening on port 12345
+9981 Jul 24 11:51 - [PWD] command received
+9981 Jul 24 11:51 - [PWD] command sent
+9981 Jul 24 11:51 - [PWD] command received
+9981 Jul 24 11:51 - [PWD] command sent
+9981 Jul 24 11:51 - Client session closed
+11624 Jul 24 11:54 - Log File:
+/workspaces/ftp-server/myftpd/myftpd.log
+11624 Jul 24 11:54 - Myftp server started up, listening on port 12345
+11694 Jul 24 11:55 - Client session closed
+12685 Jul 24 11:56 - Log File:
+/workspaces/ftp-server/myftpd/myftpd.log
+12685 Jul 24 11:56 - Myftp server started up, listening on port 12345
+12724 Jul 24 11:56 - [GET] Failed to read file length
+12724 Jul 24 11:56 - Client session closed
+18058 Jul 24 12:09 - Log File:
+/workspaces/ftp-server/myftpd/myftpd.log
+18058 Jul 24 12:09 - Myftp server started up, listening on port 12345
+18130 Jul 24 12:26 - Client session closed
+1310 Jul 24 12:35 - Log File:
+/workspaces/ftp-server/myftpd/myftpd.log
+1310 Jul 24 12:35 - Myftp server started up, listening on port 12345
+1391 Jul 24 12:35 - Client session closed
+16880 Jul 24 13:02 - Log File:
+/workspaces/ftp-server/myftpd/myftpd.log
+16880 Jul 24 13:02 - Myftp server started up, listening on port 12345
+16958 Jul 24 13:02 - [GET] GET command received.16958 Jul 24 13:02 - [GET] file name length received.16958 Jul 24 13:02 - [GET] file name received.16958 Jul 24 13:02 - [GET] File exist on server.16958 Jul 24 13:02 - [GET] File is sent to client.16958 Jul 24 13:02 - Client session closed
