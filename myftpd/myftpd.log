@@ -137,3 +137,63 @@
 /workspaces/ftp-server/myftpd/myftpd.log
 16880 Jul 24 13:02 - Myftp server started up, listening on port 12345
 16958 Jul 24 13:02 - [GET] GET command received.16958 Jul 24 13:02 - [GET] file name length received.16958 Jul 24 13:02 - [GET] file name received.16958 Jul 24 13:02 - [GET] File exist on server.16958 Jul 24 13:02 - [GET] File is sent to client.16958 Jul 24 13:02 - Client session closed
+5702 Jul 30 06:51 - Log File:
+/workspaces/ftp-server/myftpd/myftpd.log
+5702 Jul 30 06:51 - Myftp server started up, listening on port 12345
+5775 Jul 30 06:51 - [CD] CD command received.5775 Jul 30 06:51 - [CD] read file length.5775 Jul 30 06:51 - [CD] read file path.5775 Jul 30 06:51 - [CD] status is error.5775 Jul 30 06:51 - [CD] CD function ended.5775 Jul 30 06:52 - Client session closed
+7198 Jul 30 06:54 - Log File:
+/workspaces/ftp-server/myftpd/myftpd.log
+7198 Jul 30 06:54 - Myftp server started up, listening on port 12345
+7238 Jul 30 06:54 - [CD] CD command received.7238 Jul 30 06:54 - [CD] read file length.7238 Jul 30 06:54 - [CD] read file path.7238 Jul 30 06:54 - [CD] status is error.7238 Jul 30 06:54 - [CD] CD function ended.7238 Jul 30 06:54 - [CD] CD command received.7238 Jul 30 06:54 - [CD] read file length.7238 Jul 30 06:54 - [CD] read file path.7238 Jul 30 06:54 - [CD] status is ready.7238 Jul 30 06:54 - [CD] CD function ended.7238 Jul 30 06:54 - [CD] CD command received.7238 Jul 30 06:54 - [CD] read file length.7238 Jul 30 06:54 - [CD] read file path.7238 Jul 30 06:54 - [CD] status is ready.7238 Jul 30 06:54 - [CD] CD function ended.7238 Jul 30 06:54 - [PWD] command received
+7238 Jul 30 06:54 - [PWD] command sent
+7238 Jul 30 06:55 - [CD] CD command received.7238 Jul 30 06:55 - [CD] read file length.7238 Jul 30 06:55 - [CD] read file path.7238 Jul 30 06:55 - [CD] status is ready.7238 Jul 30 06:55 - [CD] CD function ended.7238 Jul 30 06:56 - Client session closed
+9754 Jul 30 06:59 - Log File:
+/workspaces/ftp-server/myftpd/myftpd.log
+9754 Jul 30 06:59 - Myftp server started up, listening on port 12345
+9880 Jul 30 06:59 - [CD] CD command received.9880 Jul 30 06:59 - [CD] read file length.9880 Jul 30 06:59 - [CD] read file path.9880 Jul 30 06:59 - [CD] status is ready.9880 Jul 30 06:59 - [CD] CD function ended.9880 Jul 30 06:59 - [PWD] command received
+9880 Jul 30 06:59 - [PWD] command sent
+9880 Jul 30 07:02 - [CD] CD command received.9880 Jul 30 07:02 - [CD] read file length.9880 Jul 30 07:02 - [CD] read file path.9880 Jul 30 07:02 - [CD] status is ready.9880 Jul 30 07:02 - [CD] CD function ended.9880 Jul 30 07:02 - [CD] CD command received.9880 Jul 30 07:02 - [CD] read file length.9880 Jul 30 07:02 - [CD] read file path.9880 Jul 30 07:02 - [CD] status is ready.9880 Jul 30 07:02 - [CD] CD function ended.9880 Jul 30 07:02 - [PWD] command received
+9880 Jul 30 07:02 - [PWD] command sent
+9880 Jul 30 07:13 - [CD] CD command received.9880 Jul 30 07:13 - [CD] read file length.9880 Jul 30 07:13 - [CD] read file path.9880 Jul 30 07:13 - [CD] status is ready.9880 Jul 30 07:13 - [CD] CD function ended.9880 Jul 30 07:13 - Client session closed
+15721 Jul 30 07:14 - [CD] CD command received.15721 Jul 30 07:14 - [CD] read file length.15721 Jul 30 07:14 - [CD] read file path.15721 Jul 30 07:14 - [CD] status is ready.15721 Jul 30 07:14 - [CD] CD function ended.15721 Jul 30 07:14 - [PWD] command received
+15721 Jul 30 07:14 - [PWD] command sent
+15721 Jul 30 07:14 - [CD] CD command received.15721 Jul 30 07:14 - [CD] read file length.15721 Jul 30 07:14 - [CD] read file path.15721 Jul 30 07:14 - [CD] status is error.15721 Jul 30 07:14 - [CD] CD function ended.15721 Jul 30 07:15 - [PWD] command received
+15721 Jul 30 07:15 - [PWD] command sent
+15721 Jul 30 07:15 - [CD] CD command received.15721 Jul 30 07:15 - [CD] read file length.15721 Jul 30 07:15 - [CD] read file path.15721 Jul 30 07:15 - [CD] status is error.15721 Jul 30 07:15 - [CD] CD function ended.15721 Jul 30 07:15 - [CD] CD command received.15721 Jul 30 07:15 - [CD] read file length.15721 Jul 30 07:15 - [CD] read file path.15721 Jul 30 07:15 - [CD] status is error.15721 Jul 30 07:15 - [CD] CD function ended.15721 Jul 30 07:16 - Client session closed
+17124 Jul 30 07:17 - [CD] CD command received.17124 Jul 30 07:17 - [CD] read file length.17124 Jul 30 07:17 - [CD] read file path.17124 Jul 30 07:17 - [CD] status is ready.17124 Jul 30 07:17 - [CD] CD function ended.17124 Jul 30 07:17 - [PWD] command received
+17124 Jul 30 07:17 - [PWD] command sent
+17124 Jul 30 07:17 - [CD] CD command received.17124 Jul 30 07:17 - [CD] read file length.17124 Jul 30 07:17 - [CD] read file path.17124 Jul 30 07:17 - [CD] status is ready.17124 Jul 30 07:17 - [CD] CD function ended.17124 Jul 30 07:17 - [PWD] command received
+17124 Jul 30 07:17 - [PWD] command sent
+17124 Jul 30 07:21 - Client session closed
+19196 Jul 30 07:21 - [CD] CD command received.19196 Jul 30 07:21 - [CD] read file length.19196 Jul 30 07:21 - [CD] read file path.19196 Jul 30 07:21 - [CD] status is ready.19196 Jul 30 07:21 - [CD] CD function ended.19196 Jul 30 07:21 - [CD] CD command received.19196 Jul 30 07:21 - [CD] read file length.19196 Jul 30 07:21 - [CD] read file path.19196 Jul 30 07:21 - [CD] status is ready.19196 Jul 30 07:21 - [CD] CD function ended.19196 Jul 30 07:22 - [PWD] command received
+19196 Jul 30 07:22 - [PWD] command sent
+19196 Jul 30 07:22 - [GET] GET command received.19196 Jul 30 07:22 - [GET] file name length received.19196 Jul 30 07:22 - [GET] file name received.19196 Jul 30 07:22 - [GET] File does not exist on server.19196 Jul 30 07:23 - [PUT] file name length received.19196 Jul 30 07:23 - [PUT] file name length is 13.19196 Jul 30 07:23 - [PUT] file name received.19196 Jul 30 07:23 - [PUT] put ready.19196 Jul 30 07:23 - [PUT] file size received.19196 Jul 30 07:23 - [PUT] file received from client.19196 Jul 30 07:23 - [PUT] put success.19196 Jul 30 07:23 - [GET] GET command received.19196 Jul 30 07:23 - [GET] file name length received.19196 Jul 30 07:23 - [GET] file name received.19196 Jul 30 07:23 - [GET] File does not exist on server.19196 Jul 30 07:35 - Client session closed
+25082 Jul 30 07:35 - Log File:
+/workspaces/ftp-server/myftpd/myftpd.log
+25082 Jul 30 07:35 - Myftp server started up, listening on port 12345
+25121 Jul 30 07:36 - [GET] GET command received.25121 Jul 30 07:36 - [GET] file name length received.
+25121 Jul 30 07:36 - [GET] file name received.
+25121 Jul 30 07:36 - [GET] file name: big
+25121 Jul 30 07:36 - [GET] File does not exist on server.
+25121 Jul 30 07:37 - Client session closed
+25875 Jul 30 07:37 - [GET] GET command received.25875 Jul 30 07:37 - [GET] file name length received.
+25875 Jul 30 07:37 - [GET] file name received.
+25875 Jul 30 07:37 - [GET] file name: big
+25875 Jul 30 07:37 - [GET] File does not exist on server.
+25875 Jul 30 07:38 - Client session closed
+26385 Jul 30 07:38 - [GET] GET command received.26385 Jul 30 07:38 - [GET] file name length received.
+26385 Jul 30 07:38 - [GET] file name received.
+26385 Jul 30 07:38 - [GET] file name: big
+26385 Jul 30 07:38 - [GET] File does not exist on server.
+26385 Jul 30 07:39 - Client session closed
+26950 Jul 30 07:39 - [GET] GET command received.26950 Jul 30 07:39 - [GET] file name length received.
+26950 Jul 30 07:39 - [GET] file name received.
+26950 Jul 30 07:39 - [GET] file name: big space.txt
+26950 Jul 30 07:39 - [GET] File exist on server.
+26950 Jul 30 07:39 - [GET] File is sent to client.
+26950 Jul 30 07:39 - [GET] GET command received.26950 Jul 30 07:39 - [GET] file name length received.
+26950 Jul 30 07:39 - [GET] file name received.
+26950 Jul 30 07:39 - [GET] file name: foo
+26950 Jul 30 07:39 - [GET] File exist on server.
+26950 Jul 30 07:39 - [GET] File is sent to client.
+26950 Jul 30 07:41 - Client session closed

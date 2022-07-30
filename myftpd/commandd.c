@@ -234,12 +234,12 @@ void ser_cd(int socket_desc, char *file)
 	// read the file length from client
 	if ((readn(socket_desc, &buffer[0], MAX_BLOCK_SIZE)) < 0)
 	{
-		log_message(file, "[CD] failed to read file length.");
+		log_message(file, "[CD] failed to read file length.\n");
 		return;
 	}
 	else
 	{
-		log_message(file, "[CD] read file length.");
+		log_message(file, "[CD] read file length.\n");
 	}
 
 	memcpy(&len, &buffer[0], 2);
@@ -248,12 +248,12 @@ void ser_cd(int socket_desc, char *file)
 	// read path from client
 	if ((readn(socket_desc, &buffer[2], MAX_BLOCK_SIZE)) < 0)
 	{
-		log_message(file, "[CD] failed to read file path.");
+		log_message(file, "[CD] failed to read file path.\n");
 		return;
 	}
 	else
 	{
-		log_message(file, "[CD] read file path.");
+		log_message(file, "[CD] read file path.\n");
 	}
 
 	memcpy(path, &buffer[2], len);
@@ -265,12 +265,12 @@ void ser_cd(int socket_desc, char *file)
 	if (chdirready == 0)
 	{
 		status = SUCCESS_CODE;
-		log_message(file, "[CD] status is ready.");
+		log_message(file, "[CD] status is ready.\n");
 	}
 	else if (chdirready == -1)
 	{
 		status = ERROR_CODE;
-		log_message(file, "[CD] status is error.");
+		log_message(file, "[CD] status is error.\n");
 	}
 
 	memset(buffer, 0, MAX_BLOCK_SIZE);
@@ -279,7 +279,7 @@ void ser_cd(int socket_desc, char *file)
 	// Write OPCODE to client
 	if ((writen(socket_desc, &buffer[0], 1)) < 0)
 	{
-		log_message(file, "[CD] failed to write opcode to client.");
+		log_message(file, "[CD] failed to write opcode to client.\n");
 		return;
 	}
 
@@ -288,11 +288,11 @@ void ser_cd(int socket_desc, char *file)
 	// Write status to client
 	if ((writen(socket_desc, &buffer[1], 1)) < 0)
 	{
-		log_message(file, "[CD] failed to write status to client.");
+		log_message(file, "[CD] failed to write status to client.\n");
 		return;
 	}
 
-	log_message(file, "[CD] CD function ended.");
+	log_message(file, "[CD] CD function ended.\n");
 	return;
 }
 
@@ -310,8 +310,8 @@ void ser_put(int socket_desc, char *file)
 	memcpy(&file_len, &buffer[0], 2);
 	file_len = ntohs(file_len);
 
-	log_message(file, "[PUT] file name length received.");
-	log_message(file, "[PUT] file name length is %d.", file_len);
+	log_message(file, "[PUT] file name length received.\n");
+	log_message(file, "[PUT] file name length is %d.\n", file_len);
 
 	// read file name
 	readn(socket_desc, &buffer[2], MAX_BLOCK_SIZE);
@@ -319,18 +319,18 @@ void ser_put(int socket_desc, char *file)
 
 	filename[file_len] = '\0';
 
-	log_message(file, "[PUT] file name received.");
+	log_message(file, "[PUT] file name received.\n");
 
 	// check if file exist on server
 	if (access(filename, R_OK) == 0)
 	{
 		ackcode = FILE_EXIST;
-		log_message(file, "[PUT] put clash error.");
+		log_message(file, "[PUT] put clash error.\n");
 	}
 	else
 	{
 		ackcode = SUCCESS_CODE;
-		log_message(file, "[PUT] put ready.");
+		log_message(file, "[PUT] put ready.\n");
 	}
 	// write opcode and ack code to client
 	memset(buffer, 0, MAX_BLOCK_SIZE);
@@ -347,7 +347,7 @@ void ser_put(int socket_desc, char *file)
 		// check if can read opcode from client
 		if (readn(socket_desc, &buffer[0], MAX_BLOCK_SIZE) < 0)
 		{
-			log_message(file, "[PUT] failed to read OPCODE from client.");
+			log_message(file, "[PUT] failed to read OPCODE from client.\n");
 			return;
 		}
 		memcpy(&opcode, &buffer[0], 1);
@@ -355,14 +355,14 @@ void ser_put(int socket_desc, char *file)
 		// check if can read file size from client
 		if (readn(socket_desc, &buffer[1], MAX_BLOCK_SIZE) < 0)
 		{
-			log_message(file, "[PUT] failed to read file size from client.");
+			log_message(file, "[PUT] failed to read file size from client.\n");
 			return;
 		}
 
 		memcpy(&fsize, &buffer[1], 4);
 		fsize = ntohl(fsize);
 
-		log_message(file, "[PUT] file size received.");
+		log_message(file, "[PUT] file size received.\n");
 
 		// create file
 		if ((fd = open(filename, O_WRONLY | O_CREAT, 0666)) != -1)
@@ -383,7 +383,7 @@ void ser_put(int socket_desc, char *file)
 
 				if (nr < 0)
 				{
-					log_message(file, "[PUT] failed to read file.");
+					log_message(file, "[PUT] failed to read file.\n");
 					ackcode = ERROR_CODE;
 				}
 
@@ -391,7 +391,7 @@ void ser_put(int socket_desc, char *file)
 
 				if (nw < 0)
 				{
-					log_message(file, "[PUT] failed to write file.");
+					log_message(file, "[PUT] failed to write file.\n");
 					ackcode = ERROR_CODE;
 				}
 			}
@@ -407,7 +407,7 @@ void ser_put(int socket_desc, char *file)
 					nr = readn(socket_desc, block, MAX_BLOCK_SIZE);
 					if (nr < 0)
 					{
-						log_message(file, "[PUT] failed to read file.");
+						log_message(file, "[PUT] failed to read file.\n");
 						ackcode = ERROR_CODE;
 					}
 
@@ -418,7 +418,7 @@ void ser_put(int socket_desc, char *file)
 						nw = write(fd, block, leftover);
 						if (nw < 0)
 						{
-							log_message(file, "[PUT] failed to write file.");
+							log_message(file, "[PUT] failed to write file.\n");
 							ackcode = ERROR_CODE;
 						}
 					}
@@ -427,7 +427,7 @@ void ser_put(int socket_desc, char *file)
 						nw = write(fd, block, MAX_BLOCK_SIZE);
 						if (nw < 0)
 						{
-							log_message(file, "[PUT] failed to write file.");
+							log_message(file, "[PUT] failed to write file.\n");
 							ackcode = ERROR_CODE;
 						}
 					}
@@ -435,12 +435,12 @@ void ser_put(int socket_desc, char *file)
 					total += nw;
 				}
 			}
-			log_message(file, "[PUT] file received from client.");
+			log_message(file, "[PUT] file received from client.\n");
 		}
 		else
 		{
 			ackcode = ERROR_CODE;
-			log_message(file, "[PUT] put failed.");
+			log_message(file, "[PUT] put failed.\n");
 		}
 
 		memset(buffer, 0, MAX_BLOCK_SIZE);
@@ -450,7 +450,7 @@ void ser_put(int socket_desc, char *file)
 		// write opcode to client
 		if (writen(socket_desc, &buffer[0], 1) < 0)
 		{
-			log_message(file, "[PUT] failed to send opcode to client.");
+			log_message(file, "[PUT] failed to send opcode to client.\n");
 			return;
 		}
 
@@ -459,13 +459,13 @@ void ser_put(int socket_desc, char *file)
 		// write ack code to client
 		if (writen(socket_desc, &buffer[1], 1) < 0)
 		{
-			log_message(file, "[PUT] failed to send ackcode to client.");
+			log_message(file, "[PUT] failed to send ackcode to client.\n");
 			return;
 		}
 
 		close(fd);
 
-		log_message(file, "[PUT] put success.");
+		log_message(file, "[PUT] put success.\n");
 		return;
 	}
 }
@@ -485,7 +485,7 @@ void ser_get(int socket_desc, char *file)
 	memcpy(&file_len, &buffer[0], 2);
 	file_len = ntohs(file_len);
 
-	log_message(file, "[GET] file name length received.");
+	log_message(file, "[GET] file name length received.\n");
 
 	// read file name
 	readn(socket_desc, &buffer[2], MAX_BLOCK_SIZE);
@@ -493,13 +493,17 @@ void ser_get(int socket_desc, char *file)
 
 	filename[file_len] = '\0';
 
-	log_message(file, "[GET] file name received.");
+	log_message(file, "[GET] file name received.\n");
 
 	FILE *fileDup;
 	fileDup = fopen(filename, "r");
 	memset(buffer, 0, MAX_BLOCK_SIZE);
 
 	// check if file exist on server
+	// log file name and size to server log file
+
+	log_message(file, "[GET] file name: %s\n", filename);
+
 	if (fileDup != NULL)
 	{
 		buffer[0] = OP_GET;
@@ -507,24 +511,24 @@ void ser_get(int socket_desc, char *file)
 
 		if (writen(socket_desc, &buffer[0], 1) < 0)
 		{
-			log_message(file, "[GET] failed to send opcode to client.");
+			log_message(file, "[GET] failed to send opcode to client.\n");
 			return;
 		}
 
 		if (writen(socket_desc, &buffer[1], 1) < 0)
 		{
-			log_message(file, "[GET] failed to send ackcode to client.");
+			log_message(file, "[GET] failed to send ackcode to client.\n");
 			return;
 		}
 
-		log_message(file, "[GET] File exist on server.");
+		log_message(file, "[GET] File exist on server.\n");
 
 		struct stat fst;
 
 		// get file stat
 		if (stat(filename, &fst) == -1)
 		{
-			log_message(file, "[GET] failed to get file stat.");
+			log_message(file, "[GET] failed to get file stat.\n");
 			return;
 		}
 
@@ -535,7 +539,7 @@ void ser_get(int socket_desc, char *file)
 
 		if (writen(socket_desc, &buffer[0], 1) < 0)
 		{
-			log_message(file, "[GET] failed to write opcode to client.");
+			log_message(file, "[GET] failed to write opcode to client.\n");
 		}
 
 		fsize = (int)fst.st_size;
@@ -544,7 +548,7 @@ void ser_get(int socket_desc, char *file)
 
 		if (writen(socket_desc, &buffer[1], 4) < 0)
 		{
-			log_message(file, "[GET] failed to write file size to client.");
+			log_message(file, "[GET] failed to write file size to client.\n");
 			return;
 		}
 
@@ -581,7 +585,7 @@ void ser_get(int socket_desc, char *file)
 				total += nr;
 			}
 		}
-		log_message(file, "[GET] File is sent to client.");
+		log_message(file, "[GET] File is sent to client.\n");
 	}
 	else
 	{
@@ -590,16 +594,16 @@ void ser_get(int socket_desc, char *file)
 
 		if (writen(socket_desc, &buffer[0], 1) < 0)
 		{
-			log_message(file, "[GET] failed to send opcode to client.");
+			log_message(file, "[GET] failed to send opcode to client.\n");
 			return;
 		}
 		if (writen(socket_desc, &buffer[1], 1) < 0)
 		{
-			log_message(file, "[GET] failed to send ackcode to client.");
+			log_message(file, "[GET] failed to send ackcode to client.\n");
 			return;
 		}
 
-		log_message(file, "[GET] File does not exist on server.");
+		log_message(file, "[GET] File does not exist on server.\n");
 		return;
 	}
 }

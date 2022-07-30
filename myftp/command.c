@@ -64,23 +64,47 @@ void cmd_prompt(int socket_desc)
 				}
 			}
 
-			else if (numTok == 2)
+			else if (numTok >= 2)
 			{
 				if (strcmp(tokenArray[0], CMD_CD) == 0)
 				{
-					cli_cd(socket_desc, tokenArray[1]);
+
+					// loop through from tokenArraay[1] and concatenate the string if numTok > 2
+					char *path = malloc(sizeof(char) * MAX_NUM_CHAR);
+
+					extraToken(path, numTok, tokenArray);
+
+					cli_cd(socket_desc, path);
+
+					// cli_cd(socket_desc, tokenArray[1]);
 				}
 				else if (strcmp(tokenArray[0], CMD_PUT) == 0)
 				{
-					cli_put(socket_desc, tokenArray[1]);
+
+					// loop through from tokenArraay[1] and concatenate the string if numTok > 2
+					char *path = malloc(sizeof(char) * MAX_NUM_CHAR);
+
+					extraToken(path, numTok, tokenArray);
+
+					cli_put(socket_desc, path);
 				}
 				else if (strcmp(tokenArray[0], CMD_GET) == 0)
 				{
-					cli_get(socket_desc, tokenArray[1]);
+
+					char *path = malloc(sizeof(char) * MAX_NUM_CHAR);
+
+					extraToken(path, numTok, tokenArray);
+
+					cli_get(socket_desc, path);
 				}
 				else if (strcmp(tokenArray[0], CMD_LCD) == 0)
 				{
-					cli_lcd(tokenArray[1]);
+
+					char *path = malloc(sizeof(char) * MAX_NUM_CHAR);
+
+					extraToken(path, numTok, tokenArray);
+
+					cli_lcd(path);
 				}
 				else
 				{
@@ -92,6 +116,24 @@ void cmd_prompt(int socket_desc)
 				fprintf(stdout, "Invalid command, try again. type \"help\" for documentation\n");
 			}
 		}
+	}
+}
+
+void extraToken(char *path, int numTok, char *tokenArray[])
+{
+
+	if (numTok > 2)
+	{
+		strcpy(path, tokenArray[1]);
+		for (int i = 2; i < numTok; i++)
+		{
+			strcat(path, " ");
+			strcat(path, tokenArray[i]);
+		}
+	}
+	else
+	{
+		strcpy(path, tokenArray[1]);
 	}
 }
 
@@ -327,7 +369,7 @@ void cli_cd(int socket_desc, char *cmd_path)
 	// check if status code is valid
 	if (status == SUCCESS_CODE)
 	{
-		printf("\tClient: CD to new directory: %s.\n", cmd_path);
+		printf("\tClient: CD to new directory: %s\n", cmd_path);
 		return;
 	}
 	else if (status == ERROR_CODE)
@@ -358,8 +400,8 @@ void cli_put(int socket_desc, char *filename)
 	char buffer[MAX_BLOCK_SIZE];
 
 	memset(buffer, 0, MAX_BLOCK_SIZE); // set bufferfer to zero
-	char file_name[MAX_BLOCK_SIZE]; // use for storing filename
-	strcpy(file_name, filename);		// string copy filename
+	char file_name[MAX_BLOCK_SIZE];		 // use for storing filename
+	strcpy(file_name, filename);			 // string copy filename
 
 	FILE *file;										// create file pointer
 	file = fopen(file_name, "r"); // open client selected file
@@ -534,6 +576,9 @@ void cli_get(int socket_desc, char *file_name)
 	char buffer[MAX_BLOCK_SIZE];
 	memset(buffer, 0, MAX_BLOCK_SIZE);
 
+	// print out file name
+	printf("\tClient: Downloading file %s\n", file_name);
+
 	char filename[MAX_BLOCK_SIZE]; // use for storing filename
 	strcpy(filename, file_name);	 // string copy filename
 	buffer[0] = OP_GET;
@@ -587,7 +632,7 @@ void cli_get(int socket_desc, char *file_name)
 		if (ackcode == SUCCESS_CODE)
 		{
 			printf("\tClient: File is found on server.\n");
-			
+
 			memset(buffer, 0, MAX_BLOCK_SIZE);
 			if (readn(socket_desc, &buffer[0], MAX_BLOCK_SIZE) < 0)
 			{

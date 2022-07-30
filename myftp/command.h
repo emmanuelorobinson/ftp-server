@@ -30,6 +30,9 @@ void cmd_prompt(int socket_desc);
  *  Return:		void
  *
 */
+
+void extraToken(char *path, int numTok, char *tokenArray[]);
+
 void cli_dir(int socket_desc);
 
 /** Purpose:	To print out the files present in current working directory of client
